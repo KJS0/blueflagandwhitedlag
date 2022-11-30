@@ -164,6 +164,7 @@ def gameStart():
         
         voice = STT()
         voice = voice.replace("전기","청기")
+        voice = voice.replace("정기","청기")
         voice = voice.replace("천기","청기")
         voice = voice.replace("성기","청기")
         voice = voice.replace("창기","청기")
