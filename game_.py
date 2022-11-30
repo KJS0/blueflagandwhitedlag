@@ -5,6 +5,9 @@ import speech_recognition as sr
 from gtts import gTTS
 from pymata4 import pymata4
 
+this_program_directory = os.path.dirname(os.path.abspath(__file__))
+os.chdir(this_program_directory)
+
 #포트이쥬?
 BLUE = 5
 WHITE = 6
@@ -39,13 +42,16 @@ def TTS(text):
     MD5 = md5()
     MD5.update(text.encode('UTF-8'))
     filename = MD5.hexdigest() # 텍스트를 md5해시화해서 파일이름으로 사용
-    if os.path.exists(f"{filename}.mp3"): # 동일 내용을 저장하여 속도 개선
-        playsound(f"{filename}.mp3", block=True) 
+    if os.path.exists(f"./tts_cache/{filename}.mp3"):
+        if os.path.getsize(f"./tts_cache/{filename}.mp3") == 0:
+            os.remove(f"./tts_cache/{filename}.mp3") #0바이트 파일제거
+    if os.path.exists(f"./tts_cache/{filename}.mp3"): # 동일 내용을 저장하여 속도 개선
+        playsound(f"./tts_cache/{filename}.mp3", block=True) 
     else:
         try:
             tts = gTTS(text,lang='ko')
-            tts.save(f"{filename}.mp3")
-            playsound(f"{filename}.mp3", block=True)
+            tts.save(f"./tts_cache/{filename}.mp3")
+            playsound(f"./tts_cache/{filename}.mp3", block=True)
         except Exception as e:
             print("TTS 실행 중 오류")
             print(e)
@@ -78,6 +84,7 @@ def voice_clean(voice):
     voice = voice.replace("울어","올려")
     voice = voice.replace("액기","백기")
     voice = voice.replace("밝기","백기")
+    voice = voice.replace("애기","백기")
     voice = voice.replace("맥기","백기")
     voice = voice.replace("백조","백기")
     voice = voice.replace("100조","백기")
