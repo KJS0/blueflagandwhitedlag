@@ -62,15 +62,15 @@ def gameStart():
         flag1 = False
         flag2 = [ False, False ]
         
-        level_num = math.floor(level ** 0.5)
-        print(f"{level}렙, {life}")
+        level_num = math.floor(level ** 0.5) # 레벨 함수 수식 (수정 가능)
+        print(f"{level} 레벨, {life}")
         
         print(FLAGS_TXT[ran1])
         for i in range(1, level_num + 1):
             if level_num == 1 or i == level_num:
-                ran2 = random.choice([0, 3])
+                ran2 = random.choice([0, 3]) # 올려, 내려
             else:
-                ran2 = random.choice([1, 2, 4, 5])
+                ran2 = random.choice([1, 2, 4, 5]) # 올리고, 올리지 말고, 내리고, 내리지 말고
             
             if 0 <= ran2 <= 1: # 올려, 올리고
                 flag1 = True
@@ -83,7 +83,7 @@ def gameStart():
         if flag1 == flag2[len(flag2) - 1]:
             print(f"\n{level} 레벨 통과!")
             
-            if level % 5 == 0:
+            if level % 5 == 0: # x5, x0 레벨 통과 시 기회 1회 더 부여
                 print(f"LIFE +1")
                 life += 1
         
