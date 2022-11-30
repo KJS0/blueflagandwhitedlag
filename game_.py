@@ -38,10 +38,14 @@ def Blue(i):
     elif(i==5):  my_board.servo_write(BLUE, BLUE_MID)
 
 def TTS(text):
-    tts = gTTS(text,lang='ko')
-    tts.save("tts.mp3")
-    playsound("tts.mp3", block=True)
-    os.remove("tts.mp3")
+    try:
+        tts = gTTS(text,lang='ko')
+        tts.save("tts.mp3")
+        playsound("tts.mp3", block=True)
+    except:
+        pass
+    if os.path.exists("tts.mp3"):
+        os.remove("tts.mp3")
     
 def STT():
     r = sr.Recognizer()
@@ -88,7 +92,7 @@ def main():
         else:
             os.system("cls")
             print("[INFO] 다시 입력해주세요.\n")
-            time.sleep(3)
+            time.sleep(1)
 
 """
 청기백기 구현
@@ -109,20 +113,19 @@ def gameStart():
     
     print("청기백기 게임에 참여하는 여러분! 환영합니다")
     print("규칙은 다음과 같습니다.")
-    #TTS("청기백기 게임에 참여하는 여러분! 환영합니다")
-    #TTS("규칙은 다음과 같습니다.")
+    time.sleep(1)
     
-    os.system("cls")
+    #os.system("cls")
     print("1. 지시된 명령을 듣고, 최종적으로 올리거나 내려야 할 깃발을 음성으로 말해야합니다.")
     print("2. 음성은 ""백기 올려""와 같이 두 단어로만 대답해야합니다.")
     print("3. 만약 음성을 인식하지 못하는 상황을 대비해, 세번까지 기회가 주어집니다.")
-    #TTS("1. 지시된 명령을 듣고, 최종적으로 올리거나 내려야 할 깃발을 음성으로 말해야합니다.")
-    #TTS("2. 음성은 ""백기 올려""와 같이 두 단어로만 대답해야합니다.")
-    #TTS("3. 만약 음성을 인식하지 못하는 상황을 대비해, 세번까지 기회가 주어집니다.")
-    
+    time.sleep(5)
+
     os.system("cls")
+    print("지금부터 게임을 시작하겠습니다.")
     TTS("지금부터 게임을 시작하겠습니다.")
     print("지금부터 게임을 시작하겠습니다.")
+    time.sleep(0.3)
     
     
     while True:
@@ -133,11 +136,12 @@ def gameStart():
         if life == 0:
             print("GAME OVER")
             print("5초 후에 메인 화면으로 이동합니다.")
+            TTS("게임 오버.")
             time.sleep(5)
             break
         
-        flag1 = [ 0, 0 ]
-        flag2 = [ 0, 0 ]
+        flag1 = [ False, False ]
+        flag2 = [ False, False ]
         falsespeech = False
         
         level_num = math.floor(level ** 0.5) # 레벨 함수 수식 (수정 가능)
@@ -190,6 +194,7 @@ def gameStart():
         voice = voice.replace("액기","백기")
         voice = voice.replace("밝기","백기")
         voice = voice.replace("맥기","백기")
+        voice = voice.replace("백조","백기")
         
         print("\n")
         print(voice)
@@ -234,7 +239,7 @@ def gameStart():
             print(f"{level} 단계 통과 실패!")
             print(f"앞으로 {life}번 남았습니다.")
             
-            TTS(f"{level} 단계 통과 실패!")
+            #TTS(f"{level} 단계 통과 실패!")
             TTS(f"앞으로 {life}번 남았습니다.")
         
         tmp_tts = ' '
