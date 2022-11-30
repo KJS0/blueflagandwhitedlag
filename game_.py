@@ -1,6 +1,5 @@
 import os,sys,time,math,random
 from hashlib import md5
-from datetime import datetime
 from playsound import playsound
 import speech_recognition as sr
 from gtts import gTTS
@@ -27,9 +26,9 @@ my_board.set_pin_mode_servo(WHITE) # 백기
 
 def White(i):
     global my_board
-    if(i==True): my_board.servo_write(WHITE, WHITE_ON)
-    elif(i==False): my_board.servo_write(WHITE, WHITE_OFF)
-    elif(i==5):  my_board.servo_write(WHITE, WHITE_MID)
+    if(i==True): my_board.servo_write(WHITE, WHITE_ON) #올림
+    elif(i==False): my_board.servo_write(WHITE, WHITE_OFF) #내림
+    elif(i==5):  my_board.servo_write(WHITE, WHITE_MID) #중간
 def Blue(i):
     global my_board
     if(i==True): my_board.servo_write(BLUE, BLUE_ON)
@@ -37,14 +36,22 @@ def Blue(i):
     elif(i==5):  my_board.servo_write(BLUE, BLUE_MID)
 
 def TTS(text):
-    try:
-        tts = gTTS(text,lang='ko')
-        tts.save("tts.mp3")
-        playsound("tts.mp3", block=True)
-    except:
-        pass
-    if os.path.exists("tts.mp3"):
-        os.remove("tts.mp3") 
+    MD5 = md5()
+    MD5.update(text.encode('UTF-8'))
+    filename = MD5.hexdigest() # 텍스트를 md5해시화해서 파일이름으로 사용
+    if os.path.exists(f"{filename}.mp3"): # 동일 내용을 저장하여 속도 개선
+        playsound(f"{filename}.mp3", block=True) 
+    else:
+        try:
+            tts = gTTS(text,lang='ko')
+            tts.save(f"{filename}.mp3")
+            playsound(f"{filename}.mp3", block=True)
+        except Exception as e:
+            print("TTS 실행 중 오류")
+            print(e)
+            os.system("pause")
+            sys.exit(0)
+
 def STT():
     r = sr.Recognizer()
     try:
@@ -53,26 +60,34 @@ def STT():
             voice = r.recognize_google(audio, language='ko-KR')
         return voice
     except:
-        return STT()
+        return STT() #재시도
 
 def voice_clean(voice):
+    #인식 오류를 줄이기 위한 처절한 몸부림
     voice = voice.replace("전기","청기")
     voice = voice.replace("정기","청기")
     voice = voice.replace("천기","청기")
     voice = voice.replace("청기와","청기")
+    voice = voice.replace("청기력","청기 올려")
     voice = voice.replace("성기","청기")
     voice = voice.replace("창기","청기")
     voice = voice.replace("경기","청기")
     voice = voice.replace("원료","올려")
+    voice = voice.replace("울려","올려")
+    voice = voice.replace("얼려","올려")
+    voice = voice.replace("울어","올려")
     voice = voice.replace("액기","백기")
     voice = voice.replace("밝기","백기")
     voice = voice.replace("맥기","백기")
     voice = voice.replace("백조","백기")
+    voice = voice.replace("100조","백기")
+    voice = voice.replace("100개","백기")
+    voice = voice.replace("100기","백기")
     return voice
 
 def main():
     while True:
-        os.system("cls") # cls = 화면 지우기
+        os.system("cls") # cls = 화면 지우기 - 윈도우
         print("청기백기 게임")
         print("1. 시작")
         print("2. 종료")
@@ -210,10 +225,10 @@ def gameStart():
             TTS(f"{level} 단계 통과!")
             level += 1
             
-            if level % 5 == 0: # x5, x0 레벨 통과 시 기회 1회 더 부여
+            if (level-1) % 5 == 0: # x5, x0 레벨 통과 시 기회 1회 더 부여
                 life += 1
-                print(f"LIFE +1\n 남은 라이프 {life}개")
-                TTS(f"{level} 단계를 통과했으므로, 기회를 한번 더 드리겠습니다.")
+                print(f"LIFE +1\n남은 라이프 {life}개")
+                TTS(f"{level-1} 단계를 통과했으므로, 기회를 한번 더 드리겠습니다.")
                 
         elif (chance == 0 or flag1 != flag2):
             os.system("cls")
@@ -246,7 +261,7 @@ except KeyboardInterrupt:
 
 
 
-
+## 테스트용 -------------------------
 # def TEST():
 #     TTS("청기를 내립니다.")
 #     Blue(OFF)
