@@ -1,32 +1,78 @@
-import os
-import sys
-import time
-import math
-import random
+import os,sys,time,math,random
+from hashlib import md5
+from datetime import datetime
+from playsound import playsound
+import speech_recognition as sr
+from gtts import gTTS
 from pymata4 import pymata4
 
-# gTTS
-import speech_recognition as sr
-from glob import glob
-from io import BytesIO
-from gtts import gTTS
-from pydub import AudioSegment
-from pydub.playback import play
+#포트이쥬?
+BLUE = 5
+WHITE = 6
+
+#각이쥬?
+BLUE_ON = 0
+BLUE_OFF = 90
+BLUE_MID = 45
+WHITE_ON = 180
+WHITE_OFF = 90
+WHITE_MID = 135
+
+ON=True
+OFF=False
 
 my_board = pymata4.Pymata4()
-my_board.set_pin_mode_servo(6) # 청기
-my_board.set_pin_mode_servo(7) # 백기
-my_board.servo_write(7, 10)
-my_board.servo_write(6, 110)
+my_board.set_pin_mode_servo(BLUE) # 청기
+my_board.set_pin_mode_servo(WHITE) # 백기
 
-flag1 = []
-flag2 = []
-tmp_tts = []
-voice = ''
+def White(i):
+    global my_board
+    if(i==True): my_board.servo_write(WHITE, WHITE_ON)
+    elif(i==False): my_board.servo_write(WHITE, WHITE_OFF)
+    elif(i==5):  my_board.servo_write(WHITE, WHITE_MID)
 
-"""
-메인 화면
-"""
+def Blue(i):
+    global my_board
+    if(i==True): my_board.servo_write(BLUE, BLUE_ON)
+    elif(i==False): my_board.servo_write(BLUE, BLUE_OFF)
+    elif(i==5):  my_board.servo_write(BLUE, BLUE_MID)
+
+def TTS(text):
+    tts = gTTS(text,lang='ko')
+    tts.save("tts.mp3")
+    playsound("tts.mp3", block=True)
+    os.remove("tts.mp3")
+    
+def STT():
+    r = sr.Recognizer()
+    try:
+        with sr.Microphone() as source:
+            audio = r.listen(source, timeout=5)
+            voice = r.recognize_google(audio, language='ko-KR')
+        return voice
+    except:
+        return STT()
+
+# def TEST():
+#     TTS("청기를 내립니다.")
+#     Blue(OFF)
+#     time.sleep(1)
+#     TTS("청기를 올립니다.")
+#     Blue(ON)
+#     time.sleep(1)
+#     TTS("청기를 내립니다.")
+#     Blue(OFF)
+#     time.sleep(1)
+#     TTS("백기를 내립니다.")
+#     White(OFF)
+#     time.sleep(1)
+#     TTS("백기를 올립니다.")
+#     White(ON)
+#     time.sleep(1)
+#     TTS("백기를 내립니다.")
+#     White(OFF)
+#     time.sleep(1)
+
 def main():
     while True:
         os.system("cls") # cls = 화면 지우기
@@ -63,23 +109,25 @@ def gameStart():
     
     print("청기백기 게임에 참여하는 여러분! 환영합니다")
     print("규칙은 다음과 같습니다.")
-    #tts("청기백기 게임에 참여하는 여러분! 환영합니다")
-    #tts("규칙은 다음과 같습니다.")
+    #TTS("청기백기 게임에 참여하는 여러분! 환영합니다")
+    #TTS("규칙은 다음과 같습니다.")
     
     os.system("cls")
     print("1. 지시된 명령을 듣고, 최종적으로 올리거나 내려야 할 깃발을 음성으로 말해야합니다.")
     print("2. 음성은 ""백기 올려""와 같이 두 단어로만 대답해야합니다.")
     print("3. 만약 음성을 인식하지 못하는 상황을 대비해, 세번까지 기회가 주어집니다.")
-    #tts("1. 지시된 명령을 듣고, 최종적으로 올리거나 내려야 할 깃발을 음성으로 말해야합니다.")
-    #tts("2. 음성은 ""백기 올려""와 같이 두 단어로만 대답해야합니다.")
-    #tts("3. 만약 음성을 인식하지 못하는 상황을 대비해, 세번까지 기회가 주어집니다.")
+    #TTS("1. 지시된 명령을 듣고, 최종적으로 올리거나 내려야 할 깃발을 음성으로 말해야합니다.")
+    #TTS("2. 음성은 ""백기 올려""와 같이 두 단어로만 대답해야합니다.")
+    #TTS("3. 만약 음성을 인식하지 못하는 상황을 대비해, 세번까지 기회가 주어집니다.")
     
     os.system("cls")
-    tts("지금부터 게임을 시작하겠습니다.")
+    TTS("지금부터 게임을 시작하겠습니다.")
     print("지금부터 게임을 시작하겠습니다.")
     
     
     while True:
+        White(5)
+        Blue(5)
         chance = 3
         os.system("cls")
         if life == 0:
@@ -88,14 +136,15 @@ def gameStart():
             time.sleep(5)
             break
         
-        flag1 = [ False, False ]
-        flag2 = [ False, False ]
+        flag1 = [ 0, 0 ]
+        flag2 = [ 0, 0 ]
+        falsespeech = False
         
         level_num = math.floor(level ** 0.5) # 레벨 함수 수식 (수정 가능)
-        tts(f"{level} 단계 시작")
-        print(f"{level} 레벨, {life}")
+        TTS(f"{level} 단계 시작")
+        print(f"레벨 {level} / 남은 라이프 {life}")
         
-        print(FLAGS_TXT[ran1])
+        print(FLAGS_TXT[ran1], end = ' ')
         tmp_tts = tmp_tts + FLAGS_TXT[ran1]
         for i in range(1, level_num + 1):
             if level_num == 1 or i == level_num:
@@ -111,46 +160,52 @@ def gameStart():
             print(QUESTION_TXT[ran2], end = ' ')
         
         global voice
-        tts(tmp_tts)
+        TTS(tmp_tts)
         
-        r = sr.Recognizer()
-        with sr.Microphone() as source:
-            audio = r.listen(source, timeout=5)
-                
-        voice = r.recognize_google(audio, language='ko-KR')
+        voice = STT()
+        voice = voice.replace("전기","청기")
+        voice = voice.replace("천기","청기")
+        voice = voice.replace("성기","청기")
+        voice = voice.replace("창기","청기")
+        voice = voice.replace("경기","청기")
+        voice = voice.replace("원료","올려")
+        voice = voice.replace("액기","백기")
+        
+        print("\n")
         print(voice)
-        if voice.find("백기") >= 1 and voice.find("올려") >= 1:
-            my_board.servo_write(7, 10)
+        
+        if "백기" in voice and "올려" in voice:
+            White(ON)
             flag2[0] = True
-        if voice.find("백기") >= 1 and voice.find("내려") >= 1:
-            my_board.servo_write(7, 95)
+        elif "백기" in voice and "내려" in voice:
+            White(OFF)
             flag2[0] = False
-        elif voice.find("청기") >= 1 and voice.find("올려") >= 1:
-            my_board.servo_write(6, 10)
+        elif "청기" in voice and "올려" in voice:
+            Blue(ON)
             flag2[1] = True
-        elif voice.find("청기") >= 1 and voice.find("내려") >= 1:
-            my_board.servo_write(6, 110)
+        elif "청기" in voice and "내려" in voice:
+            Blue(OFF)
             flag2[1] = False
         else:
-            tts("뭐라고 했는지 이해가 안되요")
+            falsespeech = True
+            TTS("뭐라고 했는지 이해가 안돼요")
             chance -= 1
-                
             if chance != 0:
                 chance -= 1
             elif chance == 0:
                 break
         
-        time.sleep(3)
+        time.sleep(2.5)
         
-        if flag1 == flag2:
+        if (flag1 == flag2) and (not falsespeech):
             os.system("cls")
             print(f"\n{level} 단계 통과!")
-            tts(f"{level} 단계 통과!")
+            TTS(f"{level} 단계 통과!")
             level += 1
             
             if level % 5 == 0: # x5, x0 레벨 통과 시 기회 1회 더 부여
                 print(f"LIFE +1")
-                tts(f"{level} 단계를 통과했으므로, 기회를 한번 더 드리겠습니다.")
+                TTS(f"{level} 단계를 통과했으므로, 기회를 한번 더 드리겠습니다.")
                 life += 1
         elif chance == 0 or flag1 != flag2:
             os.system("cls")
@@ -159,8 +214,8 @@ def gameStart():
             print(f"{level} 단계 통과 실패!")
             print(f"앞으로 {life}번 남았습니다.")
             
-            tts(f"{level} 단계 통과 실패!")
-            tts(f"앞으로 {life}번 남았습니다.")
+            TTS(f"{level} 단계 통과 실패!")
+            TTS(f"앞으로 {life}번 남았습니다.")
         
         tmp_tts = ' '
         
@@ -173,29 +228,9 @@ def gameStart():
 def gameExit():
     sys.exit(0)
 
-"""
-TTS 구현 (gTTS 2.3.0)
-"""
-def tts(word, toSlow=False):
-    tts = gTTS(text=word, lang="ko", slow=toSlow)
-    
-    fp = BytesIO()
-    tts.write_to_fp(fp)
-    fp.seek(0)
-    
-    song = AudioSegment.from_file(fp, format="mp3")
-    play(song)
-    
-    fileList = glob("./ffcache*")
-    for filePath in fileList:
-        os.remove(filePath)
-
 try:
     main()
 except SystemExit:
     pass
 except KeyboardInterrupt:
     gameExit()
-#except:
-#    print("[ERROR] 오류 발생")
-#    gameExit()
