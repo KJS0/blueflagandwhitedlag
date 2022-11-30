@@ -1,13 +1,12 @@
 import os
 import sys
 import time
-
 import math
 import random
 
+# gTTS
 from glob import glob
 from io import BytesIO
-
 from gtts import gTTS
 from pydub import AudioSegment
 from pydub.playback import play
@@ -21,7 +20,7 @@ tmp_tts = []
 """
 def main():
     while True:
-        os.system("cls")
+        os.system("cls") # cls = 화면 지우기
         print("청기백기 게임")
         print("1. 시작")
         print("2. 종료")
@@ -36,6 +35,9 @@ def main():
             print("[INFO] 다시 입력해주세요.\n")
             time.sleep(3)
 
+"""
+청기백기 구현
+"""
 def gameStart():
     global flag1, flag2
     os.system("cls")
@@ -90,9 +92,15 @@ def gameStart():
         time.sleep(1.5)
         print("\n")
 
+"""
+게임 종료
+"""
 def gameExit():
     sys.exit(0)
 
+"""
+TTS 구현 (현재 gTTS 작동 안함!)
+"""
 def tts(word, toSlow=False):
     tts = gTTS(text=word, lang="ko", slow=toSlow)
     
