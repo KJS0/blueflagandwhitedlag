@@ -77,8 +77,10 @@ def voice_clean(voice):
     voice = voice.replace("청기력","청기 올려")
     voice = voice.replace("성기","청기")
     voice = voice.replace("창기","청기")
+    voice = voice.replace("청개구리","청기")
     voice = voice.replace("경기","청기")
     voice = voice.replace("원료","올려")
+    voice = voice.replace("돌려","올려")
     voice = voice.replace("울려","올려")
     voice = voice.replace("얼려","올려")
     voice = voice.replace("울어","올려")
@@ -217,7 +219,7 @@ def gameStart():
             flag2[1] = False
         else:
             falsespeech = True
-            TTS("뭐라고 했는지 이해가 안돼요")
+            TTS("뭐라는거야")
             chance -= 1
             if chance != 0:
                 chance -= 1
