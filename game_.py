@@ -14,8 +14,8 @@ from pydub import AudioSegment
 from pydub.playback import play
 
 my_board = pymata4.Pymata4()
-my_board.set_pin_mode_servo(6)
-my_board.set_pin_mode_servo(7)
+my_board.set_pin_mode_servo(6) # 청기
+my_board.set_pin_mode_servo(7) # 백기
 my_board.servo_write(7, 10)
 my_board.servo_write(6, 110)
 
@@ -118,30 +118,27 @@ def gameStart():
             audio = r.listen(source, timeout=5)
                 
         voice = r.recognize_google(audio, language='ko-KR')
-        if voice[0] == "청기":
-            if voice[1] == "올려":
-                my_board.servo_write(7, 10)
-                flag2[0] = True
-            elif voice[1] == "내려":
-                my_board.servo_write(7, 95)
-                flag2[0] = False
-        elif voice[0] == "백기":
-            if voice[1] == "올려":
-                my_board.servo_write(6, 10)
-                flag2[1] = True
-            elif voice[1] == "내려":
-                my_board.servo_write(6, 110)
-                flag2[1] = False
-            else:
-                tts("뭐라고 했는지 이해가 안되요")
-                chance -= 1
+        print(voice)
+        if voice.find("백기") >= 1 and voice.find("올려") >= 1:
+            my_board.servo_write(7, 10)
+            flag2[0] = True
+        if voice.find("백기") >= 1 and voice.find("내려") >= 1:
+            my_board.servo_write(7, 95)
+            flag2[0] = False
+        elif voice.find("청기") >= 1 and voice.find("올려") >= 1:
+            my_board.servo_write(6, 10)
+            flag2[1] = True
+        elif voice.find("청기") >= 1 and voice.find("내려") >= 1:
+            my_board.servo_write(6, 110)
+            flag2[1] = False
+        else:
+            tts("뭐라고 했는지 이해가 안되요")
+            chance -= 1
                 
             if chance != 0:
                 chance -= 1
             elif chance == 0:
                 break
-            
-        print('\n' + voice)
         
         time.sleep(3)
         
