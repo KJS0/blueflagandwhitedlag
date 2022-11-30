@@ -97,7 +97,7 @@ def gameStart():
     global flag1, flag2
     os.system("cls")
     
-    level = 1 # 초기 레벨
+    level = 21 # 초기 레벨
     life = 3 # 초기 생명 수
     chance = 3 # 기회
     ran1 = random.randrange(0, 2) # 초기 깃발 색상
@@ -143,7 +143,18 @@ def gameStart():
         level_num = math.floor(level ** 0.5) # 레벨 함수 수식 (수정 가능)
         TTS(f"{level} 단계 시작")
         print(f"레벨 {level} / 남은 라이프 {life}")
-        
+
+        if (FLAGS_TXT[ran1] == "청기" and level > 8):
+            print("백기 올리지 말고", end = ' ')
+            tmp_tts += "백기 올리지 말고"
+        elif (FLAGS_TXT[ran1] == "백기" and level > 8):
+            print("청기 올리지 말고", end = ' ')
+            tmp_tts += "청기 올리지 말고"
+        if (level > 11):
+            for i in range(random.choice([4, 3])):
+                rand_hardmode = QUESTION_TXT[random.choice([2, 4, 5])] #올리지 말고, 내리고, 내리지 말고
+                print(rand_hardmode, end = ' ')
+                tmp_tts += rand_hardmode
         print(FLAGS_TXT[ran1], end = ' ')
         tmp_tts = tmp_tts + FLAGS_TXT[ran1]
         for i in range(1, level_num + 1):
@@ -166,11 +177,14 @@ def gameStart():
         voice = voice.replace("전기","청기")
         voice = voice.replace("정기","청기")
         voice = voice.replace("천기","청기")
+        voice = voice.replace("청기와","청기")
         voice = voice.replace("성기","청기")
         voice = voice.replace("창기","청기")
         voice = voice.replace("경기","청기")
         voice = voice.replace("원료","올려")
         voice = voice.replace("액기","백기")
+        voice = voice.replace("밝기","백기")
+        voice = voice.replace("맥기","백기")
         
         print("\n")
         print(voice)
