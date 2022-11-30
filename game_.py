@@ -30,7 +30,6 @@ def White(i):
     if(i==True): my_board.servo_write(WHITE, WHITE_ON)
     elif(i==False): my_board.servo_write(WHITE, WHITE_OFF)
     elif(i==5):  my_board.servo_write(WHITE, WHITE_MID)
-
 def Blue(i):
     global my_board
     if(i==True): my_board.servo_write(BLUE, BLUE_ON)
@@ -45,8 +44,7 @@ def TTS(text):
     except:
         pass
     if os.path.exists("tts.mp3"):
-        os.remove("tts.mp3")
-    
+        os.remove("tts.mp3") 
 def STT():
     r = sr.Recognizer()
     try:
@@ -57,25 +55,20 @@ def STT():
     except:
         return STT()
 
-# def TEST():
-#     TTS("청기를 내립니다.")
-#     Blue(OFF)
-#     time.sleep(1)
-#     TTS("청기를 올립니다.")
-#     Blue(ON)
-#     time.sleep(1)
-#     TTS("청기를 내립니다.")
-#     Blue(OFF)
-#     time.sleep(1)
-#     TTS("백기를 내립니다.")
-#     White(OFF)
-#     time.sleep(1)
-#     TTS("백기를 올립니다.")
-#     White(ON)
-#     time.sleep(1)
-#     TTS("백기를 내립니다.")
-#     White(OFF)
-#     time.sleep(1)
+def voice_clean(voice):
+    voice = voice.replace("전기","청기")
+    voice = voice.replace("정기","청기")
+    voice = voice.replace("천기","청기")
+    voice = voice.replace("청기와","청기")
+    voice = voice.replace("성기","청기")
+    voice = voice.replace("창기","청기")
+    voice = voice.replace("경기","청기")
+    voice = voice.replace("원료","올려")
+    voice = voice.replace("액기","백기")
+    voice = voice.replace("밝기","백기")
+    voice = voice.replace("맥기","백기")
+    voice = voice.replace("백조","백기")
+    return voice
 
 def main():
     while True:
@@ -183,18 +176,7 @@ def gameStart():
         TTS(tmp_tts)
         
         voice = STT()
-        voice = voice.replace("전기","청기")
-        voice = voice.replace("정기","청기")
-        voice = voice.replace("천기","청기")
-        voice = voice.replace("청기와","청기")
-        voice = voice.replace("성기","청기")
-        voice = voice.replace("창기","청기")
-        voice = voice.replace("경기","청기")
-        voice = voice.replace("원료","올려")
-        voice = voice.replace("액기","백기")
-        voice = voice.replace("밝기","백기")
-        voice = voice.replace("맥기","백기")
-        voice = voice.replace("백조","백기")
+        voice = voice_clean(voice)
         
         print("\n")
         print(voice)
@@ -229,10 +211,11 @@ def gameStart():
             level += 1
             
             if level % 5 == 0: # x5, x0 레벨 통과 시 기회 1회 더 부여
-                print(f"LIFE +1")
-                TTS(f"{level} 단계를 통과했으므로, 기회를 한번 더 드리겠습니다.")
                 life += 1
-        elif chance == 0 or flag1 != flag2:
+                print(f"LIFE +1\n 남은 라이프 {life}개")
+                TTS(f"{level} 단계를 통과했으므로, 기회를 한번 더 드리겠습니다.")
+                
+        elif (chance == 0 or flag1 != flag2):
             os.system("cls")
             life -= 1
             
@@ -259,3 +242,27 @@ except SystemExit:
     pass
 except KeyboardInterrupt:
     gameExit()
+
+
+
+
+
+# def TEST():
+#     TTS("청기를 내립니다.")
+#     Blue(OFF)
+#     time.sleep(1)
+#     TTS("청기를 올립니다.")
+#     Blue(ON)
+#     time.sleep(1)
+#     TTS("청기를 내립니다.")
+#     Blue(OFF)
+#     time.sleep(1)
+#     TTS("백기를 내립니다.")
+#     White(OFF)
+#     time.sleep(1)
+#     TTS("백기를 올립니다.")
+#     White(ON)
+#     time.sleep(1)
+#     TTS("백기를 내립니다.")
+#     White(OFF)
+#     time.sleep(1)
