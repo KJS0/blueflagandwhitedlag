@@ -112,7 +112,7 @@ def gameStart():
     QUESTION_TXT = [ "올려", "올리고", "올리지 말고", "내려", "내리고", "내리지 말고" ]
     
     print("청기백기 게임에 참여하는 여러분! 환영합니다")
-    print("규칙은 다음과 같습니다.")
+    print("규칙은 다음과 같습니다.\n")
     time.sleep(1)
     
     #os.system("cls")
