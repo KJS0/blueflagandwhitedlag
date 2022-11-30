@@ -97,7 +97,7 @@ def gameStart():
     global flag1, flag2
     os.system("cls")
     
-    level = 21 # 초기 레벨
+    level = 1 # 초기 레벨
     life = 3 # 초기 생명 수
     chance = 3 # 기회
     ran1 = random.randrange(0, 2) # 초기 깃발 색상
