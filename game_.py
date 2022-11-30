@@ -219,7 +219,7 @@ def gameStart():
             flag2[1] = False
         else:
             falsespeech = True
-            TTS("뭐라는거야")
+            TTS("뭐라고 했는지 이해가 안돼요")
             chance -= 1
             if chance != 0:
                 chance -= 1
