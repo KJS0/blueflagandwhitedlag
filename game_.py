@@ -3,6 +3,7 @@ import sys
 import time
 import math
 import random
+from pymata4 import pymata4
 
 # gTTS
 import speech_recognition as sr
@@ -11,6 +12,12 @@ from io import BytesIO
 from gtts import gTTS
 from pydub import AudioSegment
 from pydub.playback import play
+
+my_board = pymata4.Pymata4()
+my_board.set_pin_mode_servo(6)
+my_board.set_pin_mode_servo(7)
+my_board.servo_write(7, 10)
+my_board.servo_write(6, 110)
 
 flag1 = []
 flag2 = []
@@ -113,13 +120,17 @@ def gameStart():
         voice = r.recognize_google(audio, language='ko-KR')
         if voice[0] == "청기":
             if voice[1] == "올려":
+                my_board.servo_write(7, 10)
                 flag2[0] = True
             elif voice[1] == "내려":
+                my_board.servo_write(7, 95)
                 flag2[0] = False
         elif voice[0] == "백기":
             if voice[1] == "올려":
+                my_board.servo_write(6, 10)
                 flag2[1] = True
             elif voice[1] == "내려":
+                my_board.servo_write(6, 110)
                 flag2[1] = False
             else:
                 tts("뭐라고 했는지 이해가 안되요")
