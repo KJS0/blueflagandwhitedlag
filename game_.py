@@ -151,6 +151,11 @@ def gameStart():
             print("청기 올리지 말고", end = ' ')
             tmp_tts += "청기 올리지 말고"
         if (level > 11):
+            for i in range(random.choice([1, 2])):
+                rand_hardmode = QUESTION_TXT[random.choice([2, 4, 5])] #올리지 말고, 내리고, 내리지 말고
+                print(rand_hardmode, end = ' ')
+                tmp_tts += rand_hardmode
+        if (level > 16):
             for i in range(random.choice([4, 3])):
                 rand_hardmode = QUESTION_TXT[random.choice([2, 4, 5])] #올리지 말고, 내리고, 내리지 말고
                 print(rand_hardmode, end = ' ')
