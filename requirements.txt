@@ -1,10 +1,6 @@
 gTTS==2.2.4
-matplotlib==3.4.2
 playsound==1.2.2
-pylint==2.9.5
 pymata4==1.15
 pyserial==3.5
 requests==2.25.1
 SpeechRecognition==3.8.1
-thingspeak==1.0.0
-thonny==3.3.13
